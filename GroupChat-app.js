@@ -24,9 +24,12 @@ app.use(bodyParser.json({extended:false}))
 
 //Import all routes
 const signupRoute = require('./Routes/signup-route')
+const loginRoute = require('./Routes/login-route')
+
 
 //app.use all routes in ORDER
 app.use(signupRoute)
+app.use(loginRoute)
 
 app.use((req, res) => {
     // console.log(req.url)
