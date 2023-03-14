@@ -4,6 +4,29 @@ try{
     
 }
 
+window.setInterval(async () => {
+    try{
+        const token = localStorage.getItem('GCtoken')
+
+        const chatDisplayDiv = document.getElementById('chatwindow')
+        
+
+        const response = await axios.get('http://localhost:4000/chat/getallchats', {
+            headers: {'authorization': token}
+        })
+
+        if(response.data.length === 0){
+            chatDisplayDiv.innerHTML = '<p class="card-text">No messages yet</p>'
+        } else{
+            chatDisplayDiv.innerHTML = ''
+            showMessages(response.data, chatDisplayDiv)
+        }
+
+    } catch(err){
+        console.log(err)
+    }
+}, 10000)
+
 window.addEventListener('DOMContentLoaded', async () => {
     try{
             const token = localStorage.getItem('GCtoken')
@@ -18,19 +41,23 @@ window.addEventListener('DOMContentLoaded', async () => {
             if(response.data.length === 0){
                 chatDisplayDiv.innerHTML = '<p class="card-text">No messages yet</p>'
             } else{
-                response.data.forEach(element => {
-                    const p = document.createElement('p')
-                    p.className = 'cart-text'
-                    p.innerText = element.chat
-                    chatDisplayDiv.appendChild(p)
-                  })
+                showMessages(response.data, chatDisplayDiv)
             }
 
     } catch(err){
-
+        console.log(err)
     }
 })
 
+function showMessages(data, chatDisplayDiv){
+
+    data.forEach(element => {
+        const p = document.createElement('p')
+        p.className = 'cart-text'
+        p.innerText = element.chat
+        chatDisplayDiv.appendChild(p)
+      })
+}
 
 async function logOut(e){
     e.preventDefault()
@@ -55,12 +82,9 @@ async function sendMessage(e){
             await axios.post('http://localhost:4000/chat/message', messageObj, {
                 headers: {'authorization': token}
             })
-            console.log('emptying')
         }
-        
-        console.log('emptying')
+
     } catch(err){
         console.log(err)
-        res.status(500).json(err, {message: 'Internal server error'})
     }
 }
