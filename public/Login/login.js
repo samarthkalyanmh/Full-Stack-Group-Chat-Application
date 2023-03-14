@@ -17,14 +17,13 @@ async function login(e){
         if(response.status === 200){
             
             displayMessage(response.data.message, true)
-            console.log(response.data.message)
 
             localStorage.setItem('GCtoken', response.data.token)
 
             const isPremiumUser = response.data.isPremiumUser
 
             setTimeout(() => {
-                window.location.href = "../Home/homePage.html"
+                window.location.href = "../Home/home.html"
             }, 1000)
             
         } else {
