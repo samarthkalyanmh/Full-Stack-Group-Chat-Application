@@ -25,11 +25,15 @@ window.setInterval(async () => {
     } catch(err){
         console.log(err)
     }
-}, 10000)
+}, 100000)
 
 window.addEventListener('DOMContentLoaded', async () => {
     try{
             const token = localStorage.getItem('GCtoken')
+
+            if(token === null){
+                window.location.href = '../Login/login.html'
+            }
 
             const chatDisplayDiv = document.getElementById('chatwindow')
             chatDisplayDiv.innerHTML = ''
@@ -54,7 +58,8 @@ function showMessages(data, chatDisplayDiv){
     data.forEach(element => {
         const p = document.createElement('p')
         p.className = 'cart-text'
-        p.innerText = element.chat
+        // p.innerText = element.chat
+        p.innerText = `${element.User.name}: ${element.chat}`
         chatDisplayDiv.appendChild(p)
       })
 }
