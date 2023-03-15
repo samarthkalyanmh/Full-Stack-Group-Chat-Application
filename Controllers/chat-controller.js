@@ -1,12 +1,12 @@
 const User = require('../Models/user-model')
-const Chat = require('../Models/chat-model')
+const Chat = require('../Models/chat-model')    
 
 const getAllChats = async (req, res, next) => {
     try{
             // const allChats = await Chat.findAll()
 
             const chatsWithUsersName = await Chat.findAll({
-                attributes: ['id','chat','GroupId'],    
+                attributes: ['id','chat'],    
                 include: [{     
                     model : User,
                     attributes : ['name'],
@@ -15,10 +15,16 @@ const getAllChats = async (req, res, next) => {
               order : ['id']
             })
 
-            //chats[i].userLogin.name
+            console.log(JSON.stringify(chatsWithUsersName))
+            const stringVersion = JSON.stringify(chatsWithUsersName)
 
-            console.log('name of user who sent chat>>>>>>>>>>>>>>>>>>>>>>>>>', chatsWithUsersName[1].User.name)
+            //chats[i].userLogin.name
+            if(chatsWithUsersName.length > 0){
+                console.log('name of user who sent chat>>>>>>>>>>>>>>>>>>>>>>>>>', chatsWithUsersName[0].User.name)
+            }
+            
             res.status(200).json(chatsWithUsersName)
+
     } catch(err){
         console.log('Error in getAllChats function>>>>>>>>>>>>>>>>>>>>>>', err)
         res.status(500).json(err, {message: 'Internal server error'})
