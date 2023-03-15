@@ -6,23 +6,32 @@ try{
 
 window.setInterval(async () => {
     try{
-        const token = localStorage.getItem('GCtoken')
+            const token = localStorage.getItem('GCtoken')
 
-        const chatDisplayDiv = document.getElementById('chatwindow')
+            const chatDisplayDiv = document.getElementById('chatwindow')
+            //Previous code
+            // const response = await axios.get('http://localhost:4000/chat/getallchats', {
+            //     headers: {'authorization': token}
+            // })
+
+            // console.log(response)
         
+            // showMessages(response.data, chatDisplayDiv)
 
-        const response = await axios.get('http://localhost:4000/chat/getallchats', {
-            headers: {'authorization': token}
-        })
 
-        console.log(response)
-    
-        showMessages(response.data, chatDisplayDiv)
+            //New code
+            let chats = localStorage.getItem('chats')
+            // console.log(chats)
+
+            updateOrNot(chats, chatDisplayDiv)
+
+
+        
 
     } catch(err){
         console.log(err)
     }
-}, 100000)
+}, 2000)    
 
 window.addEventListener('DOMContentLoaded', async () => {
     try{
@@ -34,26 +43,100 @@ window.addEventListener('DOMContentLoaded', async () => {
 
             const chatDisplayDiv = document.getElementById('chatwindow')
 
-            const response = await axios.get('http://localhost:4000/chat/getallchats', {
-                headers: {'authorization': token}
-            })
+            let chats = localStorage.getItem('chats')
+            // console.log(chats)
 
-            // if(response.data.length === 0){
-            //     chatDisplayDiv.innerHTML = '<p class="card-text">No messages yet</p>'
-            // } else{
+            updateOrNot(chats, chatDisplayDiv)
+
+            //Old code
+            // let response
+
+            // if(chats === null){
+
+            //     response = await axios.get('http://localhost:4000/chat/getallchats?lastmessageid=1', {
+            //         headers: {'authorization': token}
+            //     })
+                
+            //     const stringifiedResponse = JSON.stringify(response.data)
+            //     localStorage.setItem('chats', stringifiedResponse)
+
             //     showMessages(response.data, chatDisplayDiv)
-            // }
 
-            showMessages(response.data, chatDisplayDiv)
+            // } else{
+            //     let parsedChats = JSON.parse(chats)
+            //     let lastMessageId = parsedChats[parsedChats.length - 1].id
+            //     // console.log(lastMessageId)
+
+            //     response = await axios.get(`http://localhost:4000/chat/getallchats?lastmessageid=${lastMessageId}`, {
+            //         headers: {'authorization': token}
+            //     })
+
+            //     // console.log('resuu', response.data)
+
+            //     if(response.data.update){
+
+            //         let newParsedChats = parsedChats.concat(response.data.newChats)
+            //         console.log('newParsedChats>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>> ', newParsedChats)
+            //         showMessages(newParsedChats, chatDisplayDiv)
+            //         localStorage.setItem('chats', JSON.stringify(newParsedChats))
+            //     } else{
+            //         showMessages(JSON.parse(chats), chatDisplayDiv)
+            //     }
+            // }
 
     } catch(err){
         console.log(err)
     }
 })
 
+async function updateOrNot(chats, chatDisplayDiv){
+    try{
+        const token = localStorage.getItem('GCtoken')
+
+        let response
+        // console.log(chats.length, chats)
+        if(chats === null){
+
+            response = await axios.get('http://localhost:4000/chat/getallchats?lastmessageid=1', {
+                headers: {'authorization': token}
+            })
+            
+            const stringifiedResponse = JSON.stringify(response.data)
+
+            showMessages(response.data, chatDisplayDiv)
+
+            localStorage.setItem('chats', stringifiedResponse)
+
+        } else{
+            let parsedChats = JSON.parse(chats)
+            let lastMessageId = parsedChats[parsedChats.length - 1].id
+            // console.log(lastMessageId)
+
+            response = await axios.get(`http://localhost:4000/chat/getallchats?lastmessageid=${lastMessageId}`, {
+                headers: {'authorization': token}
+            })
+
+            // console.log('resuu', response.data)
+
+            if(response.data.update){
+
+                let newParsedChats = parsedChats.concat(response.data.newChats)
+                // console.log('newParsedChats:', newParsedChats)
+                showMessages(newParsedChats, chatDisplayDiv)
+                localStorage.setItem('chats', JSON.stringify(newParsedChats))
+            } else{
+                showMessages(JSON.parse(chats), chatDisplayDiv)
+            }
+        }
+    } catch(err){
+        console.log(err)
+    }
+}
+
 function showMessages(data, chatDisplayDiv){
 
     if(data.length === 0){
+        
         chatDisplayDiv.innerHTML = '<p class="card-text">No messages yet</p>'
 
     } else{
@@ -86,7 +169,7 @@ async function sendMessage(e){
         }
 
         if(message != '' || message != null){
-            console.log('before emptying')
+
             await axios.post('http://localhost:4000/chat/message', messageObj, {
                 headers: {'authorization': token}
             })

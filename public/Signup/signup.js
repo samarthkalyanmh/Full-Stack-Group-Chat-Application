@@ -16,8 +16,6 @@ async function signup(e){
     
         const response = await axios.post('http://localhost:4000/user/signup', userDetails)
 
-        console.log(response)
-
         if(response.status === 201){
 
             displayMessage(response.data.message, true)
