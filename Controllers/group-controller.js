@@ -3,6 +3,7 @@ const Chat = require('../Models/chat-model')
 const Group = require('../Models/group-model')
 const UserToGroup = require('../Models/userToGroup-model')
 const sequelize = require('../util/database')
+const { Op } = require('sequelize')
 
 const addGroup = async (req, res, next) => {
     try{
@@ -29,8 +30,36 @@ const addGroup = async (req, res, next) => {
 }
 
 
-const getGroups = (req, res, next) => {
+const getGroups = async (req, res, next) => {
+    try{
+        const dbResponse = await UserToGroup.findAll({
+            where: {UserId: req.user.id},
+            attributes: ['groupGroupId'],
+        })
 
+        let groupIdList = []
+        dbResponse.forEach(element => {
+            groupIdList.push(element.groupGroupId)  
+        })
+        
+        // const groupIdList = dbResponse
+
+        const groupsIdsAndNamesList = await Group.findAll({
+            where: {
+                GroupId: {
+                    [Op.or]: groupIdList
+                }
+            },
+            attributes: ['GroupId', 'GroupName']
+        })
+                            
+        console.log('groupIdList>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>', groupIdList)
+        res.status(200).json({message: 'success', groupsIdsAndNamesList: groupsIdsAndNamesList})
+
+    } catch(err){
+        console.log(err)
+        res.status(500).json({message: 'Internal server error 500', err: err})
+    }
 }
 
 

@@ -7,6 +7,8 @@ window.setInterval(async () => {
             const chatDisplayDiv = document.getElementById('chatwindow')
 
             let chats = localStorage.getItem('chats')
+
+            showGroups()
             updateOrNot(chats, chatDisplayDiv)
 
     } catch(err){
@@ -27,7 +29,9 @@ window.addEventListener('DOMContentLoaded', async () => {
 
             let chats = localStorage.getItem('chats')
 
+            showGroups()
             updateOrNot(chats, chatDisplayDiv)
+
 
     } catch(err){
         console.log(err)
@@ -162,7 +166,20 @@ function toggle(e){
 
 async function showGroups(e){
     try{
-            const response = await axios.get('http://localhost:4000/group/get-groups') 
+        const token = localStorage.getItem('GCtoken')
+        const response = await axios.get('http://localhost:4000/group/get-groups', {
+            headers: {'authorization': token}
+        }) 
+        console.log(response.data.groupsIdsAndNamesList)
+        const groupsIdsAndNamesList = response.data.groupsIdsAndNamesList
+
+        let groupsListDiv = document.getElementById('groupslist')
+        groupsListDiv.innerHTML = ''
+
+        groupsIdsAndNamesList.forEach(element => {
+            groupsListDiv.innerHTML += `<p class="card-text">${element.GroupName}</p>`
+        })
+
     } catch(err){
         console.log(err)
     }

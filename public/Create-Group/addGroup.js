@@ -17,6 +17,9 @@ async function addGroup(e){
             headers: {'authorization': token}
         })
 
+        document.getElementById('groupname').value = ''
+        document.getElementById('groupdescription').value = ''
+        
         console.log(response.data.result)
     } catch(err){
         console.log(err)
