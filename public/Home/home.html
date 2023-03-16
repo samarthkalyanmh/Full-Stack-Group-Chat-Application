@@ -29,26 +29,39 @@
         1. Manage group
         2. Chat window
         3.  -->
-    <div class="container" style="padding-top: 68px;">
+    <div class="container-fluid" style="padding-top: 68px; padding-left: 100px; padding-right: 100px;  ">
 
         <div class="row">
 
             <!-- first column -->
-            <div class="col" style="background-color:#CD5888;">
-                1 of 3
+            <div class="col">
+                <div class="card">
+                    <div class="card-header text-center">
+                        Groups List
+                    </div>
+
+                    <!-- Groups list window -->
+                    <div class="card-body text-center" id="groupslist">
+
+                        <p class="card-text">No groups joined yet</p>
+                        
+                    </div>
+                </div>
             </div>
 
             <!-- second column -->
-            <div class="col-6">
+            <div class="col-5">
                
 
                 <!--Chats diplay column  -->
                 <div class="card">
                     <div class="card-header text-center">
                       Group Name
+                      <button type="button" class="btn btn-info float-right">Manage Users</button>
                     </div>
+                    
                     <div class="card-body" id="chatwindow">
-                      <p class="card-text" id="noMessagesYetPtag">No messages yet</p>
+                      <p class="card-text">No messages yet</p>
                       
                     </div>
                     <div class="card-footer">
@@ -66,8 +79,8 @@
             </div>
 
             <!-- third column -->
-            <div class="col" style="background-color:#CD5888;">
-                3 of 3
+            <div class="col" style="background-color:yellow;">
+                
             </div>
 
 

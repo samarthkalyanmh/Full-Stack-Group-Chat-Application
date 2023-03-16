@@ -4,35 +4,22 @@ try{
     
 }
 
+//ADD CODE TO STORE ONLY 1000 messages in localstorage
 window.setInterval(async () => {
     try{
             const token = localStorage.getItem('GCtoken')
 
             const chatDisplayDiv = document.getElementById('chatwindow')
-            //Previous code
-            // const response = await axios.get('http://localhost:4000/chat/getallchats', {
-            //     headers: {'authorization': token}
-            // })
 
-            // console.log(response)
-        
-            // showMessages(response.data, chatDisplayDiv)
-
-
-            //New code
             let chats = localStorage.getItem('chats')
-            // console.log(chats)
-
             updateOrNot(chats, chatDisplayDiv)
-
-
-        
 
     } catch(err){
         console.log(err)
     }
-}, 2000)    
+}, 200000)    
 
+//ADD CODE TO STORE ONLY 1000 messages in localstorage
 window.addEventListener('DOMContentLoaded', async () => {
     try{
             const token = localStorage.getItem('GCtoken')
@@ -44,50 +31,14 @@ window.addEventListener('DOMContentLoaded', async () => {
             const chatDisplayDiv = document.getElementById('chatwindow')
 
             let chats = localStorage.getItem('chats')
-            // console.log(chats)
 
             updateOrNot(chats, chatDisplayDiv)
-
-            //Old code
-            // let response
-
-            // if(chats === null){
-
-            //     response = await axios.get('http://localhost:4000/chat/getallchats?lastmessageid=1', {
-            //         headers: {'authorization': token}
-            //     })
-                
-            //     const stringifiedResponse = JSON.stringify(response.data)
-            //     localStorage.setItem('chats', stringifiedResponse)
-
-            //     showMessages(response.data, chatDisplayDiv)
-
-            // } else{
-            //     let parsedChats = JSON.parse(chats)
-            //     let lastMessageId = parsedChats[parsedChats.length - 1].id
-            //     // console.log(lastMessageId)
-
-            //     response = await axios.get(`http://localhost:4000/chat/getallchats?lastmessageid=${lastMessageId}`, {
-            //         headers: {'authorization': token}
-            //     })
-
-            //     // console.log('resuu', response.data)
-
-            //     if(response.data.update){
-
-            //         let newParsedChats = parsedChats.concat(response.data.newChats)
-            //         console.log('newParsedChats>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>> ', newParsedChats)
-            //         showMessages(newParsedChats, chatDisplayDiv)
-            //         localStorage.setItem('chats', JSON.stringify(newParsedChats))
-            //     } else{
-            //         showMessages(JSON.parse(chats), chatDisplayDiv)
-            //     }
-            // }
 
     } catch(err){
         console.log(err)
     }
 })
+
 
 async function updateOrNot(chats, chatDisplayDiv){
     try{
@@ -97,7 +48,7 @@ async function updateOrNot(chats, chatDisplayDiv){
         // console.log(chats.length, chats)
         if(chats === null){
 
-            response = await axios.get('http://localhost:4000/chat/getallchats?lastmessageid=1', {
+            response = await axios.get('http://localhost:4000/chat/getallchats?lastmessageid=0', {
                 headers: {'authorization': token}
             })
             
@@ -110,7 +61,7 @@ async function updateOrNot(chats, chatDisplayDiv){
         } else{
             let parsedChats = JSON.parse(chats)
             let lastMessageId = parsedChats[parsedChats.length - 1].id
-            // console.log(lastMessageId)
+            console.log(lastMessageId)
 
             response = await axios.get(`http://localhost:4000/chat/getallchats?lastmessageid=${lastMessageId}`, {
                 headers: {'authorization': token}
@@ -133,6 +84,7 @@ async function updateOrNot(chats, chatDisplayDiv){
     }
 }
 
+
 function showMessages(data, chatDisplayDiv){
 
     if(data.length === 0){
@@ -150,9 +102,11 @@ function showMessages(data, chatDisplayDiv){
     }  
 }
 
+
 async function logOut(e){
     e.preventDefault()
     localStorage.removeItem('GCtoken')
+    localStorage.removeItem('chats')
     window.location.href = '../Login/login.html'
 }
 

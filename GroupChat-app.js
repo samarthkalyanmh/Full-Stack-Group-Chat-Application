@@ -9,6 +9,8 @@ const fs = require('fs')
 //Import all models
 const User = require('./Models/user-model')
 const Chat = require('./Models/chat-model')
+// const Group = require('./Models/group-model')
+// const UserToGroup = require('./Models/userToGroup-model')
 
 const sequelize = require('./util/database')
 const cors = require('cors')
@@ -44,7 +46,14 @@ app.use((req, res) => {
 User.hasMany(Chat)
 Chat.belongsTo(User)
 
-//{force: true}
+// Group.hasMany(Chat)
+// Chat.belongsTo(Group)
+
+// User.belongsToMany(Group, {through : UserToGroup})
+// Group.belongsToMany(User, {through : UserToGroup})
+
+
+//{force: true} 
 sequelize.sync()
 .then(() => {
     app.listen(4000)
