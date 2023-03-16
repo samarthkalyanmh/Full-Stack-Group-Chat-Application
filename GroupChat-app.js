@@ -9,8 +9,8 @@ const fs = require('fs')
 //Import all models
 const User = require('./Models/user-model')
 const Chat = require('./Models/chat-model')
-// const Group = require('./Models/group-model')
-// const UserToGroup = require('./Models/userToGroup-model')
+const Group = require('./Models/group-model')
+const UserToGroup = require('./Models/userToGroup-model')
 
 const sequelize = require('./util/database')
 const cors = require('cors')
@@ -30,12 +30,14 @@ app.use(bodyParser.json({extended:false}))
 const signupRoute = require('./Routes/signup-route')
 const loginRoute = require('./Routes/login-route')
 const chatRoute = require('./Routes/chat-route')
+const groupRoute = require('./Routes/group-route')
 
 
 //app.use all routes in ORDER
 app.use(signupRoute)
 app.use(loginRoute)
 app.use(chatRoute)
+app.use(groupRoute)
 
 app.use((req, res) => {
     // console.log(req.url)
@@ -46,11 +48,11 @@ app.use((req, res) => {
 User.hasMany(Chat)
 Chat.belongsTo(User)
 
-// Group.hasMany(Chat)
-// Chat.belongsTo(Group)
+Group.hasMany(Chat)
+Chat.belongsTo(Group)
 
-// User.belongsToMany(Group, {through : UserToGroup})
-// Group.belongsToMany(User, {through : UserToGroup})
+User.belongsToMany(Group, {through : UserToGroup})
+Group.belongsToMany(User, {through : UserToGroup})
 
 
 //{force: true} 

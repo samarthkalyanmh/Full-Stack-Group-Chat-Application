@@ -19,10 +19,10 @@ const Group = sequelize.define('groups',{
         type: Sequelize.STRING   
     },
 
-    // Admin: {
-    //     type: Sequelize.INTEGER,
-    //     allowNull: false,   
-    // },
+    CreatedBy: {
+        type: Sequelize.INTEGER,
+        allowNull: false,   
+    },
 })
 
 module.exports = Group

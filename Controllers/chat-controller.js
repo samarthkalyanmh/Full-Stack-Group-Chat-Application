@@ -10,11 +10,11 @@ const getAllChats = async (req, res, next) => {
             const lastMessageId = req.query.lastmessageid
 
             // console.log('Last message id>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>> ', lastMessageId)
-        
+
             let chatsWithUsersName
             if(lastMessageId === '0'){
 
-                console.log('All chats sending>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>')
+                // console.log('All chats sending>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>')
                 chatsWithUsersName = await Chat.findAll({
                     attributes: ['id','chat'],    
                     include: [{     
@@ -24,7 +24,10 @@ const getAllChats = async (req, res, next) => {
                     }],
                   order : ['id']
                 })
+                
                 return res.status(200).json(chatsWithUsersName)
+                
+                
             } else{
                 //Replace below line with countAll
                 let allChats = await Chat.findAll()
@@ -38,7 +41,7 @@ const getAllChats = async (req, res, next) => {
                     return res.status(200).json({update: false})
 
                 } else{
-                    console.log('Updates chats sending>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>')
+                    // console.log('Updates chats sending>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>')
                     chatsWithUsersName = await Chat.findAll({
                         offset: parseInt(lastMessageId),  
                         attributes: ['id','chat'],    
@@ -49,7 +52,7 @@ const getAllChats = async (req, res, next) => {
                         }],
                       order : ['id']
                     })
-                    // console.log('sending chatsWithUsersName>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>', chatsWithUsersName)
+                    console.log('sending chatsWithUsersName>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>', chatsWithUsersName)
 
                     return res.status(200).json({update: true, newChats: chatsWithUsersName})
                 }  

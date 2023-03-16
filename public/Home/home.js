@@ -1,8 +1,3 @@
-try{
-
-} catch(err){
-    
-}
 
 //ADD CODE TO STORE ONLY 1000 messages in localstorage
 window.setInterval(async () => {
@@ -52,16 +47,22 @@ async function updateOrNot(chats, chatDisplayDiv){
                 headers: {'authorization': token}
             })
             
-            const stringifiedResponse = JSON.stringify(response.data)
+            if(response.data.length != 0) {
 
-            showMessages(response.data, chatDisplayDiv)
+                const stringifiedResponse = JSON.stringify(response.data)
+                showMessages(response.data, chatDisplayDiv)
+                localStorage.setItem('chats', stringifiedResponse)
 
-            localStorage.setItem('chats', stringifiedResponse)
+            } else{
+                showMessages(response.data, chatDisplayDiv)
+            }
+
+            
 
         } else{
             let parsedChats = JSON.parse(chats)
             let lastMessageId = parsedChats[parsedChats.length - 1].id
-            console.log(lastMessageId)
+            // console.log(lastMessageId)
 
             response = await axios.get(`http://localhost:4000/chat/getallchats?lastmessageid=${lastMessageId}`, {
                 headers: {'authorization': token}
@@ -133,3 +134,36 @@ async function sendMessage(e){
         console.log(err)
     }
 }
+
+
+//Group Code
+function takeToAddGroupPage(e){
+    e.preventDefault()
+    window.location.href = '../Create-Group/addGroup.html'
+}
+
+function toggle(e){
+    e.preventDefault()
+
+    let secondColumn = document.getElementById('secondcolumn')
+    let thirdColumn = document.getElementById('thirdcolumn')
+    let toggleButton = document.getElementById('togglebutton')
+
+    if(thirdColumn.getAttribute('hidden')){
+        secondColumn.className = 'col-4'
+        thirdColumn.removeAttribute('hidden')  
+        toggleButton.innerText = 'Maximize'
+    } else{
+        thirdColumn.setAttribute('hidden', 'hidden')
+        secondColumn.className = 'col-8' 
+        toggleButton.innerText = 'Manage Users'
+    }
+}
+
+async function showGroups(e){
+    try{
+            const response = await axios.get('http://localhost:4000/group/get-groups') 
+    } catch(err){
+        console.log(err)
+    }
+} 
