@@ -10,7 +10,7 @@ const getAllChats = async (req, res, next) => {
             const lastMessageId = req.query.lastmessageid
 
             // console.log('Last message id>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>> ', lastMessageId)
-
+        
             let chatsWithUsersName
             if(lastMessageId === '0'){
 
