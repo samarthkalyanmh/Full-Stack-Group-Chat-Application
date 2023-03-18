@@ -6,7 +6,7 @@
     <meta http-equiv="X-UA-Compatible" content="IE=edge">
 
 
-    <title>Sam's Home Page</title>
+    <title>Home Page</title>
     <link href="home.css" rel="stylesheet">
 
     <meta name="viewport" content="width=device-width, initial-scale=1, shrink-to-fit=no">
@@ -62,7 +62,8 @@
                 <!--Chats diplay column  -->
                 <div class="card">
                     <div class="card-header text-center" name="groupnamediv" id="">
-                        <span style="display: inline;" id="groupnamespan">Click on a Group to show the chats</span>
+                        <h3 style="display: inline; font-weight:bold" id="groupnamespan">Click on a Group to show the chats</h3>
+                        <p id="groupdescription"></p>
                         <button type="button" class="btn btn-info float-right" id="togglebutton"
                             onclick="toggle(event)">Edit Participants</button>
                     </div>
@@ -157,14 +158,3 @@
 </body>
 
 </html>
-
-<!-- <div class="row">
-    <li class="list-group-item mt-2 col-13 mx-auto">${element.name}</li>
-    <div class="col-1"></div> 
-        <button type="button" onclick="makeUserAdmin(event)" id=${element.id}
-            class="btn btn-outline-primary col-13 my-auto">Make Admin</button>
-    <div class="col-1"></div>
-        <button onclick="removeUserFromGroup(event)" type="button" id=${element.id}
-            class="btn btn-outline-primary col-13 my-auto">Remove</button>
-</div><br>
-<p class="text-center fst-italic  mx-auto" id="resultprinting"></p> -->

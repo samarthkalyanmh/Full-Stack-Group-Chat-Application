@@ -20,11 +20,11 @@ async function addGroup(e){
         document.getElementById('groupname').value = ''
         document.getElementById('groupdescription').value = ''
         
-        console.log(response.data.result)
+        // console.log(response.data.result)
 
         const messageDiv = document.getElementById('message')
         messageDiv.innerText = ''
-        messageDiv.innerText = response.data.result
+        messageDiv.innerText = response.data.message
 
 
     } catch(err){

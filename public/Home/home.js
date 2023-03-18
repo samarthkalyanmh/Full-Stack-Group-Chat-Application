@@ -5,16 +5,13 @@ window.setInterval(async () => {
             const chatDisplayDiv = document.getElementById('chatwindow')
             let chats = localStorage.getItem('chats')
 
-            showGroups()
-            updateOrNot(chats, chatDisplayDiv)
-
             await showGroups()
             await updateOrNot(chats, chatDisplayDiv)
 
     } catch(err){
         console.log(err)
     }
-}, 200000)    
+}, 1000)    
 
 //ADD CODE TO STORE ONLY 1000 messages in localstorage
 window.addEventListener('DOMContentLoaded', async () => {
@@ -81,7 +78,9 @@ async function updateOrNot(chats, chatDisplayDiv){
                 localStorage.setItem('chats', JSON.stringify(newParsedChats))
 
                 let updatesLocalStorageChats = localStorage.getItem('chats')
-                showMessages(updatesLocalStorageChats, chatDisplayDiv)
+
+                
+                showMessages(JSON.parse(updatesLocalStorageChats), chatDisplayDiv)
                 
             } else{
                 showMessages(JSON.parse(chats), chatDisplayDiv)
@@ -176,7 +175,7 @@ function toggle(e){
 
     const groupNameDiv = document.getElementsByName('groupnamediv')
 
-    console.log(typeof groupNameDiv.id)
+    // console.log(typeof groupNameDiv.id)
 
     if(groupNameDiv.id === undefined || groupNameDiv.id === null){
         alert('Click on a group first to edit participants')
@@ -210,7 +209,7 @@ async function showGroups(e){
             groupsListDiv.innerHTML = ''
 
             groupsIdsAndNamesList.forEach(element => {
-                groupsListDiv.innerHTML += `<li class="list-group-item"><a href="#" id ="${element.GroupId}" onclick="showGroupDetailsAndChats(event)" >${element.GroupName}</a></li>`
+                groupsListDiv.innerHTML += `<li class="list-group-item"><a href="#" id ="${element.GroupId}" onclick="showGroupDetailsAndChats(event)" name="${element.GroupDescription}">${element.GroupName}</a></li>`
             })
 
         } else{
@@ -244,16 +243,13 @@ async function showGroupDetailsAndChats(e){
             
                 addUserToList(element)
         })
-    
-        //Write below code in a function
-        // const allChatsOfGroup = await axios.get(`http://localhost:4000/chat/getallchats?lastmessageid=0&groupid=${grpId}`, {
-        //     headers: {'authorization': localStorage.getItem('GCtoken')}
-        // })
 
-        
-        //Changing group name
+        //Changing group name and description
         const showGroupNameSpan = document.getElementById('groupnamespan')
         showGroupNameSpan.innerText = e.target.innerText
+
+        const groupDescriptionPara = document.getElementById('groupdescription')
+        groupDescriptionPara.innerText = e.target.getAttribute('name')
         
         //Setting id of group(Useful while sending message)
         const grpIdDiv = document.getElementsByName('groupnamediv')
@@ -262,6 +258,7 @@ async function showGroupDetailsAndChats(e){
         //Display the groups chats
         const chatDisplayDiv = document.getElementById('chatwindow')
         let chats = localStorage.getItem('chats')
+        
         updateOrNot(chats, chatDisplayDiv)
     
     } catch(err){
@@ -312,6 +309,8 @@ async function addParticipant(e){
         // console.log(response.data.user)
         if(response.data.user != null || response.data.user != undefined){
             addUserToList(response.data.user)
+            document.getElementById('usersname').value = ''
+            document.getElementById('usersemail').value = ''
         }   
         
     } catch(err){

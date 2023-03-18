@@ -7,26 +7,6 @@ const UserToGroup = require('../Models/userToGroup-model')
 const getAllChats = async (req, res, next) => {
     try{
 
-
-        // const lastMessageId = req.query.lastmessageid
-
-        // const groupId = req.query.groupid
-
-
-        // const dbResponse = await Chat.findAll({
-        //     where: {groupGroupId: groupId},
-        //     include: [{     
-        //         model : User,
-        //         attributes : ['name'],
-        //         required : true
-        //     }],
-        //   order : ['id']
-        // })
-
-        // res.status(200).json({chatsOfTheGroup: dbResponse})
-
-
-
         //OLD CODE
             const lastMessageId = req.query.lastmessageid
 
@@ -53,30 +33,30 @@ const getAllChats = async (req, res, next) => {
                 //Replace below line with countAll
                 let allChats = await Chat.findAll()
 
-                let lastMessageIdInDB = allChats[allChats.length - 1].id
-                lastMessageIdInDB = lastMessageIdInDB.toString()
+                // console.log(allChats)
+                if(allChats != null) {
+                    let lastMessageIdInDB = allChats[allChats.length - 1].id
+                    lastMessageIdInDB = lastMessageIdInDB.toString()
 
-                // console.log('lastMessageIdInDB>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>', lastMessageIdInDB)
+                    if(lastMessageIdInDB === lastMessageId){
+                        return res.status(200).json({update: false})
+    
+                    } else{
 
-                if(lastMessageIdInDB === lastMessageId){
-                    return res.status(200).json({update: false})
-
-                } else{
-                    // console.log('Updates chats sending>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>')
-                    chatsWithUsersName = await Chat.findAll({
-                        offset: parseInt(lastMessageId),  
-                        attributes: ['id','chat'],    
-                        include: [{     
-                            model : User,
-                            attributes : ['name'],
-                            required : true
-                        }],
-                      order : ['id']
-                    })
-                    console.log('sending chatsWithUsersName>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>', chatsWithUsersName)
-
-                    return res.status(200).json({update: true, newChats: chatsWithUsersName})
-                }  
+                        chatsWithUsersName = await Chat.findAll({
+                            offset: parseInt(lastMessageId),  
+                            attributes: ['id','chat','groupGroupId'],    
+                            include: [{     
+                                model : User,
+                                attributes : ['name'],
+                                required : true
+                            }],
+                          order : ['id']
+                        })
+    
+                        return res.status(200).json({update: true, newChats: chatsWithUsersName})
+                    }  
+                }
             }
 
             /* To access name: chatsWithUsersName[i].User.name */
