@@ -93,10 +93,11 @@ const messageReceived = async (req, res, next) => {
 
     try{
         console.log(req.body.message)
-        const message = req.body.message
-        const groupId = 0
+        const {message, groupId} = req.body
 
-        const data = await Chat.create({chat: message, GroupId: groupId, UserId: req.user.id})
+        const data = await Chat.create({chat: message, UserId: req.user.id, groupGroupId: groupId})
+
+        console.log('Chat created>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>', data)
 
         res.status(200).json({message: 'successfully saved'})
 

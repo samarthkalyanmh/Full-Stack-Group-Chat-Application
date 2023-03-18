@@ -121,10 +121,12 @@ async function sendMessage(e){
     try {
         const message = document.getElementById('messageinputbox').value
         const token = localStorage.getItem('GCtoken')
-        document.getElementById('messageinputbox').value = ''
+
+        const groupId = document.getElementsByName('groupnamediv').id
 
         const messageObj = {
-            message
+            message, 
+            groupId
         }
 
         if(message != '' || message != null){
@@ -132,6 +134,8 @@ async function sendMessage(e){
             await axios.post('http://localhost:4000/chat/message', messageObj, {
                 headers: {'authorization': token}
             })
+
+            document.getElementById('messageinputbox').value = ''
         }
 
     } catch(err){
@@ -227,8 +231,7 @@ async function showGroupDetails(e){
             headers: {'authorization': localStorage.getItem('GCtoken')}
         })
     
-    
-    
+
         
         //Changing group name
         const showGroupNameSpan = document.getElementById('groupnamespan')
