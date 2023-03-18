@@ -2,14 +2,14 @@
 //ADD CODE TO STORE ONLY 1000 messages in localstorage
 window.setInterval(async () => {
     try{
-            const token = localStorage.getItem('GCtoken')
-
             const chatDisplayDiv = document.getElementById('chatwindow')
-
             let chats = localStorage.getItem('chats')
 
             showGroups()
-            // updateOrNot(chats, chatDisplayDiv)
+            updateOrNot(chats, chatDisplayDiv)
+
+            await showGroups()
+            await updateOrNot(chats, chatDisplayDiv)
 
     } catch(err){
         console.log(err)
@@ -19,25 +19,25 @@ window.setInterval(async () => {
 //ADD CODE TO STORE ONLY 1000 messages in localstorage
 window.addEventListener('DOMContentLoaded', async () => {
     try{
+            //LogOut code
             const token = localStorage.getItem('GCtoken')
-
             if(token === null){
                 window.location.href = '../Login/login.html'
             }
 
-            const chatDisplayDiv = document.getElementById('chatwindow')
 
+            //Displaying chats
+            const chatDisplayDiv = document.getElementById('chatwindow')
             let chats = localStorage.getItem('chats')
 
-            showGroups()
-            // updateOrNot(chats, chatDisplayDiv)
+            await showGroups()
+            await updateOrNot(chats, chatDisplayDiv)
 
 
     } catch(err){
         console.log(err)
     }
 })
-
 
 async function updateOrNot(chats, chatDisplayDiv){
     try{
@@ -78,8 +78,11 @@ async function updateOrNot(chats, chatDisplayDiv){
 
                 let newParsedChats = parsedChats.concat(response.data.newChats)
                 // console.log('newParsedChats:', newParsedChats)
-                showMessages(newParsedChats, chatDisplayDiv)
                 localStorage.setItem('chats', JSON.stringify(newParsedChats))
+
+                let updatesLocalStorageChats = localStorage.getItem('chats')
+                showMessages(updatesLocalStorageChats, chatDisplayDiv)
+                
             } else{
                 showMessages(JSON.parse(chats), chatDisplayDiv)
             }
@@ -92,19 +95,33 @@ async function updateOrNot(chats, chatDisplayDiv){
 
 function showMessages(data, chatDisplayDiv){
 
-    if(data.length === 0){
-        
-        chatDisplayDiv.innerHTML = '<p class="card-text">No messages yet</p>'
+    const groupId = document.getElementsByName('groupnamediv').id
 
-    } else{
-        chatDisplayDiv.innerHTML = ''
-        data.forEach(element => {
-            const p = document.createElement('p')
-            p.className = 'cart-text'
-            p.innerText = `${element.User.name}: ${element.chat}`
-            chatDisplayDiv.appendChild(p)
-          })
-    }  
+    if(groupId != undefined || groupId != null){
+
+        if(data.length === 0){
+        
+            chatDisplayDiv.innerHTML = '<p class="card-text">No messages yet</p>'
+    
+        } else{
+            chatDisplayDiv.innerHTML = ''
+
+            data.forEach(element => {
+
+                // console.log(typeof element.groupGroupId, typeof parseInt(groupId))
+
+                if(element.groupGroupId === parseInt(groupId)){
+    
+                    const p = document.createElement('p')
+                    p.className = 'cart-text'
+                    p.innerText = `${element.User.name}: ${element.chat}`
+                    chatDisplayDiv.appendChild(p)
+                }
+                    
+              })
+        }  
+    }
+   
 }
 
 
@@ -161,7 +178,7 @@ function toggle(e){
 
     console.log(typeof groupNameDiv.id)
 
-    if(groupNameDiv.id === undefined){
+    if(groupNameDiv.id === undefined || groupNameDiv.id === null){
         alert('Click on a group first to edit participants')
     } else {
         if(thirdColumn.getAttribute('hidden')){
@@ -184,19 +201,21 @@ async function showGroups(e){
         const response = await axios.get('http://localhost:4000/group/get-groups', {
             headers: {'authorization': localStorage.getItem('GCtoken')}
         }) 
-        // console.log(response.data.groupsIdsAndNamesList)
+
         const groupsIdsAndNamesList = response.data.groupsIdsAndNamesList
 
-        // console.log('yo', groupsIdsAndNamesList)
 
         if(groupsIdsAndNamesList.length != 0){
             let groupsListDiv = document.getElementById('groupslist')
             groupsListDiv.innerHTML = ''
 
             groupsIdsAndNamesList.forEach(element => {
-                groupsListDiv.innerHTML += `<li class="list-group-item"><a href="#" id ="${element.GroupId}" onclick="showGroupDetails(event)" >${element.GroupName}</a></li>`
+                groupsListDiv.innerHTML += `<li class="list-group-item"><a href="#" id ="${element.GroupId}" onclick="showGroupDetailsAndChats(event)" >${element.GroupName}</a></li>`
             })
 
+        } else{
+            let groupsListDiv = document.getElementById('groupslist')
+            groupsListDiv.innerHTML = 'Add a group or get added in a group to begin'
         }
 
         
@@ -207,7 +226,7 @@ async function showGroups(e){
 } 
 
 
-async function showGroupDetails(e){
+async function showGroupDetailsAndChats(e){
 
     try{
         const grpId = e.target.id
@@ -222,15 +241,14 @@ async function showGroupDetails(e){
     
         //Showing group users in the edit participants section
         userIdsAndNamesList.forEach(element => {
-    
-            usersDiv.innerHTML += `<div class ="row"> <li class="list-group-item mt-2 col-13 mx-auto">${element.name}</li><div class="col-1"></div> <button type="button" onclick="makeUserAdmin(event)" id=${element.id} class="btn btn-outline-primary col-13 my-auto">Make Admin</button><div class="col-1"></div><button  onclick ="removeUserFromGroup(event)"type="button" id=${element.id} class="btn btn-outline-primary col-13 my-auto">Remove</button></div><br><p  class="text-center fst-italic  mx-auto" id="resultprinting"></p>`
+            
+                addUserToList(element)
         })
     
         //Write below code in a function
-        const allChatsOfGroup = await axios.get(`http://localhost:4000/chat/getallchats?lastmessageid=0&groupid=${grpId}`, {
-            headers: {'authorization': localStorage.getItem('GCtoken')}
-        })
-    
+        // const allChatsOfGroup = await axios.get(`http://localhost:4000/chat/getallchats?lastmessageid=0&groupid=${grpId}`, {
+        //     headers: {'authorization': localStorage.getItem('GCtoken')}
+        // })
 
         
         //Changing group name
@@ -243,7 +261,8 @@ async function showGroupDetails(e){
     
         //Display the groups chats
         const chatDisplayDiv = document.getElementById('chatwindow')
-        showMessages(allChatsOfGroup.data.chatsOfTheGroup, chatDisplayDiv)
+        let chats = localStorage.getItem('chats')
+        updateOrNot(chats, chatDisplayDiv)
     
     } catch(err){
         console.log(err)
@@ -257,7 +276,7 @@ async function addUserToList(user){
 
     let usersDiv = document.getElementById('userslist')
     
-    usersDiv.innerHTML += `<div class ="row"><li class="list-group-item mt-2 col-13 mx-auto">${user.name}</li><div class="col-1"></div> <button type="button" onclick="makeUserAdmin(event)" id=${user.id} class="btn btn-outline-primary col-13 my-auto">Make Admin</button><div class="col-1"></div><button  onclick ="removeUserFromGroup(event)"type="button" id=${user.id} class="btn btn-outline-primary col-13 my-auto">Remove</button></div><br>`
+    usersDiv.innerHTML += `<div class ="row"><li class="list-group-item mt-2 col-13 mx-auto">${user.name}</li><div class="col-1"></div> <button type="button" onclick="makeUserAdmin(event)" id=${user.id} class="btn btn-outline-primary col-13 my-auto">Make Admin</button><div class="col-1"></div><button  onclick ="removeUserFromGroup(event)"type="button" id=${user.id} class="btn btn-outline-primary col-13 my-auto">Remove</button></div>`
 
 }
 
