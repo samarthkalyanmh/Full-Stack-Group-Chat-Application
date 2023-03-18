@@ -8,28 +8,40 @@ const addUser = async (req, res, next) => {
 
         // console.log('????????????????????????????????????????????????????????????????????????????????????', name, email, groupId)
 
-        const user = await User.findOne({where: {
-            name: name,
-            email: email
+        const userTryingToAdd = await UserToGroup.findOne({where: {
+            UserId: req.user.id,
+            groupGroupId: groupId
         }})
 
-        if(user != null){
-
-            const relation = await UserToGroup.findOne({where: {
-                UserId: user.id,
-                groupGroupId: groupId
+        if(userTryingToAdd.admin === true){
+            const user = await User.findOne({where: {
+                name: name,
+                email: email
             }})
-
-            if(relation === null){
-                const info = await UserToGroup.create({UserId: user.id, groupGroupId: groupId, admin: false})
-                res.json({message: 'Successfully added user', user: {name: name, id: info.UserId}})
+    
+            if(user != null){
+    
+                const relation = await UserToGroup.findOne({where: {
+                    UserId: user.id,
+                    groupGroupId: groupId
+                }})
+    
+                if(relation === null){
+                    const info = await UserToGroup.create({UserId: user.id, groupGroupId: groupId, admin: false})
+                    res.json({message: 'Successfully added user', user: {name: name, id: info.UserId}})
+                } else{
+                    res.json({message: 'User is already present in the group'})
+                }
+    
             } else{
-                res.json({message: 'User is already present in the group'})
+                res.json({message: 'User details incorrect or User not registered'})
             }
 
         } else{
-            res.json({message: 'User details incorrect or User not registered'})
+            res.json({message: 'You do not have admin rights to add a user'})
         }
+
+        
         
 
     } catch(err){
@@ -44,29 +56,40 @@ const makeUserAdmin = async (req, res, next) => {
         const {userIdToMakeAdmin, groupId} = req.body
         console.log('+++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++', userIdToMakeAdmin, groupId)
 
-        const dbResponse = await UserToGroup.findOne({where:{
-            UserId: userIdToMakeAdmin,
+        const userTryingToMakeOtherUserAdmin = await UserToGroup.findOne({where: {
+            UserId: req.user.id,
             groupGroupId: groupId
         }})
 
-        if(dbResponse.admin === true){
-            res.json({message: 'User is already a admin'})
-
+        if(userTryingToMakeOtherUserAdmin.admin === true){
+            const dbResponse = await UserToGroup.findOne({where:{
+                UserId: userIdToMakeAdmin,
+                groupGroupId: groupId
+            }})
+    
+            if(dbResponse.admin === true){
+                res.json({message: 'User is already a admin'})
+    
+            } else{
+    
+                await UserToGroup.update(
+                    {
+                        admin: true
+                    }, 
+                    {
+                        where: {
+                            UserId: userIdToMakeAdmin,
+                            groupGroupId: groupId
+                        }
+                    })
+    
+                res.json({message: 'User is admin now'})
+            }
         } else{
-
-            await UserToGroup.update(
-                {
-                    admin: true
-                }, 
-                {
-                    where: {
-                        UserId: userIdToMakeAdmin,
-                        groupGroupId: groupId
-                    }
-                })
-
-            res.json({message: 'User is admin now'})
+            res.json({message: 'You do not have admin rights to make another user admin'})
         }
+
+        
 
     } catch(err){
         console.log(err)
@@ -90,10 +113,10 @@ const removeUserFromGroup = async (req, res, next) => {
                 groupGroupId: groupId
             }})
 
-            res.json({message: 'Successfully deleted user'})
+            res.json({message: 'Successfully deleted user', result: 'success'})
 
         } else {
-            res.json({message: 'You do not have admin rights to remove a user'})
+            res.json({message: 'You do not have admin rights to remove a user', result: 'failure'})
         }
 
         

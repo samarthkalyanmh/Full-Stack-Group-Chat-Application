@@ -288,12 +288,12 @@ async function addParticipant(e){
         }, 2000)
 
         // console.log(response.data.user)
-
-        addUserToList(response.data.user)
+        if(response.data.user != null || response.data.user != undefined){
+            addUserToList(response.data.user)
+        }   
         
-
     } catch(err){
-
+        console.log(err)
     }
 }
 
@@ -333,7 +333,7 @@ async function removeUserFromGroup(e){
         const userIdToRemove = e.target.id
         const groupId = document.getElementsByName('groupnamediv').id
 
-        const messageDiv = document.getElementById('useraddingresult')
+        
 
         const obj = {
             userIdToRemove,
@@ -344,21 +344,23 @@ async function removeUserFromGroup(e){
             headers: {'authorization': localStorage.getItem('GCtoken')}
         })  
 
+        const manageUsersMessageDiv = document.getElementById('manageusersmessagediv')
+        manageUsersMessageDiv.innerText = ''
 
-
-        messageDiv.innerText = ''
-        messageDiv.innerText = response.data.message
+        manageUsersMessageDiv.innerText = response.data.message
 
         setTimeout(() => {
-            messageDiv.innerText = ''
+            manageUsersMessageDiv.innerText = ''
         }, 2000)
 
-        const divToRemove = e.target.parentElement
 
-        let usersDiv = e.target.parentElement.parentElement
+        if(response.data.result === 'success'){
+            const divToRemove = e.target.parentElement
 
-        usersDiv.removeChild(divToRemove) 
+            let usersDiv = e.target.parentElement.parentElement
 
+            usersDiv.removeChild(divToRemove) 
+        }
 
     } catch(err){
         console.log(err)

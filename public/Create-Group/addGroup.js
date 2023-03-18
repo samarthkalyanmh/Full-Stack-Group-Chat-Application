@@ -21,6 +21,12 @@ async function addGroup(e){
         document.getElementById('groupdescription').value = ''
         
         console.log(response.data.result)
+
+        const messageDiv = document.getElementById('message')
+        messageDiv.innerText = ''
+        messageDiv.innerText = response.data.result
+
+
     } catch(err){
         console.log(err)
     }

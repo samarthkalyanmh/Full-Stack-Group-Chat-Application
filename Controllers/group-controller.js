@@ -20,7 +20,7 @@ const addGroup = async (req, res, next) => {
 
 
         await t.commit()
-        res.status(200).json({result: 'success'})
+        res.status(200).json({result: 'Successfully added Group'})
 
     } catch(err){
         await t.rollback()
