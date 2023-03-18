@@ -3,11 +3,9 @@ const sequelize = require('../util/database')
 
 const UserToGroup = sequelize.define('UserToGroup',{
 
-    // admin : { 
-    //   type : Sequelize.STRING,
-    //   allowNull : false, 
-      
-    // }
+    admin : { 
+      type : Sequelize.BOOLEAN     
+    }
 })
 
 module.exports = UserToGroup

@@ -31,6 +31,7 @@ const signupRoute = require('./Routes/signup-route')
 const loginRoute = require('./Routes/login-route')
 const chatRoute = require('./Routes/chat-route')
 const groupRoute = require('./Routes/group-route')
+const adminRoute = require('./Routes/admin-route')
 
 
 //app.use all routes in ORDER
@@ -38,6 +39,7 @@ app.use(signupRoute)
 app.use(loginRoute)
 app.use(chatRoute)
 app.use(groupRoute)
+app.use(adminRoute)
 
 app.use((req, res) => {
     // console.log(req.url)

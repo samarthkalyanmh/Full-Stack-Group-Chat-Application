@@ -5,9 +5,32 @@ const Chat = require('../Models/chat-model')
 //ADD CODE TO STORE ONLY 1000 messages in localstorage
 const getAllChats = async (req, res, next) => {
     try{
-            // const allChats = await Chat.findAll()
 
-            const lastMessageId = req.query.lastmessageid
+
+        const lastMessageId = req.query.lastmessageid
+        const groupId = req.query.groupid
+
+        console.log(lastMessageId, groupId)
+
+        const dbResponse = await Chat.findAll({
+            where: {groupGroupId: groupId},
+            include: [{     
+                model : User,
+                attributes : ['name'],
+                required : true
+            }],
+          order : ['id']
+        })
+
+        res.status(200).json({chatsOfTheGroup: dbResponse})
+
+
+
+
+
+
+        //OLD CODE
+            /* const lastMessageId = req.query.lastmessageid
 
             // console.log('Last message id>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>> ', lastMessageId)
 
@@ -56,7 +79,7 @@ const getAllChats = async (req, res, next) => {
 
                     return res.status(200).json({update: true, newChats: chatsWithUsersName})
                 }  
-            }
+            } */
 
             /* To access name: chatsWithUsersName[i].User.name */
 

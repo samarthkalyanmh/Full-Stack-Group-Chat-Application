@@ -61,9 +61,10 @@
 
                 <!--Chats diplay column  -->
                 <div class="card">
-                    <div class="card-header text-center">
-                        Group Name
-                        <button type="button" class="btn btn-info float-right" id="togglebutton" onclick="toggle(event)">Manage Users</button>
+                    <div class="card-header text-center" name="groupnamediv" id="">
+                        <span style="display: inline;" id="groupnamespan">Click on a Group to show the chats</span>
+                        <button type="button" class="btn btn-info float-right" id="togglebutton"
+                            onclick="toggle(event)">Edit Participants</button>
                     </div>
 
                     <div class="card-body" id="chatwindow">
@@ -93,28 +94,38 @@
                 <div class="card">
                     <div class="card-header text-center">Add Users </div>
                     <div class="p-2 input-group mb-3">
-                        <span class="input-group-text">User Name :</span>
-                        <input type="text" id="username" class="form-control" aria-label="Sizing example input"
+                        <span class="input-group-text">User's Name :</span>
+                        <input type="text" id="usersname" class="form-control" aria-label="Sizing example input"
                             aria-describedby="inputGroup-sizing-default" required>
 
                         <div class="input-group mb-3">
                             <span class="input-group-text">User Email :</span>
-                            <input type="number" id="phonenumber" class="form-control" aria-label="Sizing example input"
+                            <input type="email" id="usersemail" class="form-control" aria-label="Sizing example input"
                                 aria-describedby="inputGroup-sizing-default" required>
                         </div>
 
                         <div class="btn p-1 col-12">
-                            <button type="submit" onclick="addUserToGroup(event)" class="btn btn-primary mx-auto"> Add
+                            <button type="submit" onclick="addParticipant(event)" class="btn btn-primary mx-auto"> Add
                                 users</button>
-                                <br>
+                            <br>
                         </div><br>
 
                         <p class="text-center fst-italic  mx-auto" id="useraddingresult"></p>
                     </div>
-                    <div class="card-footer text-center"> Manage Users</div>
-                    <div id="managechats" class="card-body"><!-- DYNAMIC GROUPS LIST -->
-                        <ul id="managelist" class="list-group list-group-flush col-12"></ul>
+                    <div class="card-footer text-center">
+                        Manage Users
+                        <br>
+                        <p id="manageusersmessagediv"></p>
                     </div>
+                    <div class="card-body text-center" id="userslist">
+
+                        <!-- <p class="card-text">No groups joined yet</p> -->
+
+                    </div>
+
+                    <!-- <div id="managechats" class="card-body">
+                        <ul id="managelist" class="list-group list-group-flush col-12"></ul>
+                    </div> -->
                 </div>
 
 
@@ -146,3 +157,14 @@
 </body>
 
 </html>
+
+<!-- <div class="row">
+    <li class="list-group-item mt-2 col-13 mx-auto">${element.name}</li>
+    <div class="col-1"></div> 
+        <button type="button" onclick="makeUserAdmin(event)" id=${element.id}
+            class="btn btn-outline-primary col-13 my-auto">Make Admin</button>
+    <div class="col-1"></div>
+        <button onclick="removeUserFromGroup(event)" type="button" id=${element.id}
+            class="btn btn-outline-primary col-13 my-auto">Remove</button>
+</div><br>
+<p class="text-center fst-italic  mx-auto" id="resultprinting"></p> -->
